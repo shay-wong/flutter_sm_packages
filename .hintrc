@@ -1,0 +1,14 @@
+{
+  "extends": ["development"],
+  "hints": {
+    "meta-viewport": "off",
+    "meta-charset-utf-8": "off",
+    "axe/language": "off",
+    "compat-api/html": [
+      "default",
+      {
+        "ignore": ["video[playsinline]"]
+      }
+    ]
+  }
+}

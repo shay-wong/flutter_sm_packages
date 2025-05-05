@@ -1,0 +1,13 @@
+name: sm_lints
+description: "Recommended lints for Flutter apps, packages, and plugins to encourage good coding practices"
+version: 0.0.1
+homepage: https://github.com/shay-wong/flutter_sm_packages/tree/main/sm_lints
+
+environment:
+  sdk: ">=3.5.4 <4.0.0"
+
+dependencies:
+  flutter_lints: ^5.0.0
+
+topics:
+  - lints

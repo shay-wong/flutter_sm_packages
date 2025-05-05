@@ -1,0 +1,31 @@
+name: peek
+description: "A Flutter debugging inspection tool."
+version: 0.0.1
+homepage: https://github.com/shay-wong/flutter_sm_packages/tree/main/peek
+
+environment:
+  sdk: ">=3.5.4 <4.0.0"
+  flutter: ">=3.24.5"
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+dev_dependencies:
+  flutter_lints: ^5.0.0
+  flutter_test:
+    sdk: flutter
+  sm_lints:
+    path: ../sm_lints
+
+flutter:
+  uses-material-design: true
+
+# This package supports all platforms listed below.
+platforms:
+  android:
+  ios:
+  linux:
+  macos:
+  web:
+  windows:
