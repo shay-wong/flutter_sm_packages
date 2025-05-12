@@ -15,7 +15,8 @@ pubspec.lock
 ios/
 android/
 demo/
-example_dart/
+example/app/
+example/main_getx.dart
 
 # Directory created by dartdoc
 # If you don't generate documentation locally you can remove this line.

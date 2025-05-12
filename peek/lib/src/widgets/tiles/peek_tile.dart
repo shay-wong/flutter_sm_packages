@@ -1,4 +1,4 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 
 /// 选项单元类型
 enum PeekTileType {
@@ -10,15 +10,20 @@ enum PeekTileType {
 }
 
 /// 选项单元
-abstract class PeekTile {
+abstract class PeekTile extends StatelessWidget {
   // ignore: public_member_api_docs
-  const PeekTile({this.footer, this.child, this.onTap});
+  const PeekTile({
+    super.key,
+    this.icon,
+    this.title,
+    this.onTap,
+  });
 
   /// 图标
-  final Widget? child;
+  final Widget? icon;
 
   /// 标题
-  final Widget? footer;
+  final Widget? title;
 
   /// 点击
   final VoidCallback? onTap;

@@ -2,7 +2,7 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'options/src/peek_options.dart';
-import 'pages/home_page.dart';
+import 'pages/peek_page.dart';
 import 'widgets/peek_entry.dart';
 import 'widgets/peek_overlay_entry.dart';
 
@@ -36,10 +36,14 @@ class Peek extends StatefulWidget {
     final enable = options?.enable ?? false;
     if (enable) {
       return (BuildContext context, Widget? child) {
+        final peek = Peek(
+          options: options,
+          child: child,
+        );
         if (builder != null) {
-          return builder(context, Peek(options: options, child: child));
+          return builder(context, peek);
         } else {
-          return Peek(options: options, child: child);
+          return peek;
         }
       };
     } else {
@@ -73,21 +77,34 @@ class _PeekState extends State<Peek> {
 
   @override
   Widget build(BuildContext context) {
-    return widget.options.enable
-        ? Material(
-            child: Overlay(
-              key: _overlayKey,
-              initialEntries: [
-                PeekOverlayEntry(
-                  builder: (context) {
-                    return widget.child;
-                  },
-                ),
-                if (isShowEntry) _overlayEntry,
-              ],
+    // ignore: omit_local_variable_types
+    Widget child = widget.child;
+
+    if (widget.options.enable) {
+      child = Material(
+        child: Overlay(
+          key: _overlayKey,
+          initialEntries: [
+            PeekOverlayEntry(
+              builder: (context) {
+                return widget.child;
+              },
             ),
-          )
-        : widget.child;
+            if (isShowEntry) _overlayEntry,
+          ],
+        ),
+      );
+
+      if (context.widget is! Directionality &&
+          context.getElementForInheritedWidgetOfExactType<Directionality>() == null) {
+        child = Directionality(
+          textDirection: TextDirection.ltr,
+          child: child,
+        );
+      }
+    }
+
+    return child;
   }
 
   @override
@@ -124,7 +141,8 @@ class _PeekState extends State<Peek> {
 
   void toggleHome() {
     peekPage ??= OverlayEntry(
-      builder: (context) => HomePage(
+      builder: (context) => PeekPage(
+        options: widget.options,
         onClose: hideHome,
         customTiles: widget.options.customTiles,
       ),
