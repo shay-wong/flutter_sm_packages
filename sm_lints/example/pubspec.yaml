@@ -1,12 +1,10 @@
 name: example
-description: A sample command-line application.
-version: 1.0.0
+description: A project that showcases how to enable the recommended lints for Flutter apps, packages, and plugins.
+
 publish_to: none
 
 environment:
   sdk: ^3.7.0
 
 dev_dependencies:
-  sm_lints:
-    path: ../
-  test: ^1.25.15
+  sm_lints: ^1.0.0

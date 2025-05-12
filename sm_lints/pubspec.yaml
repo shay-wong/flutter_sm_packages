@@ -8,7 +8,7 @@ environment:
   sdk: ">=3.7.0 <4.0.0"
 
 dependencies:
-  flutter_lints: ">=5.0.0 <6.0.0"
+  lints: ">=5.0.0 <6.0.0"
 
 topics:
   - lints

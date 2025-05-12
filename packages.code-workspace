@@ -1,0 +1,16 @@
+{
+  "folders": [
+    {
+      "path": "peek"
+    },
+    {
+      "path": "sm_lints"
+    }
+  ],
+  "settings": {
+    "files.exclude": {
+      "sm_lints/example/lib/main.dart": true
+    },
+    "dart.lineLength": 100
+  }
+}

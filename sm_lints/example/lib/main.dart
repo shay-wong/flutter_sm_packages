@@ -9,8 +9,10 @@
 // ignore_for_file: avoid_renaming_method_parameters
 
 void main() {
-  const partOne = 'Hello';
-  const partTwo = 'World';
+  // ignore: omit_local_variable_types, omit_obvious_local_variable_types
+  const String partOne = 'Hello';
+  // ignore: omit_local_variable_types, omit_obvious_local_variable_types
+  const String partTwo = 'World';
 
   // The following syntax deactivates a lint on a per-line bases:
   print('$partOne $partTwo'); // ignore: avoid_print
