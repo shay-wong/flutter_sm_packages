@@ -16,14 +16,18 @@ void main() {
   print('$partOne $partTwo'); // ignore: avoid_print
 }
 
+// ignore: unreachable_from_main, public_member_api_docs
 abstract class Base {
+  // ignore: unreachable_from_main, public_member_api_docs
   int methodA(int foo);
+  // ignore: unreachable_from_main, public_member_api_docs
   String methodB(String foo);
 }
 
 // Normally, the parameter renaming from `foo` to `bar` in this class would
 // trigger the `avoid_renaming_method_parameters` lint, but it has been
 // deactivated for the file with the `ignore_for_file` comment above.
+// ignore: unreachable_from_main, public_member_api_docs
 class Sub extends Base {
   @override
   int methodA(int bar) => bar;
