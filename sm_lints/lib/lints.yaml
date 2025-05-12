@@ -7,6 +7,7 @@ analyzer:
     - "**/*.g.dart"
     - "lib/generated/*"
 
+# Configurable page width requires a language version of at least 3.7.
 formatter:
   page_width: 100
 
