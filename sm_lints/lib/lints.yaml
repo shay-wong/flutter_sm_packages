@@ -8,8 +8,8 @@ analyzer:
     - "lib/generated/*"
 
 # Configurable page width requires a language version of at least 3.7.
-# formatter:
-#   page_width: 100
+formatter:
+  page_width: 100
 
 # See https://dart.dev/tools/linter-rules
 linter:
@@ -249,9 +249,9 @@ linter:
     # 局部变量省略类型注解。
     - omit_local_variable_types
     # 省略明显的局部变量类型。
-    # - omit_obvious_local_variable_types
+    - omit_obvious_local_variable_types
     # 省略明显的属性类型。
-    # - omit_obvious_property_types
+    - omit_obvious_property_types
     # 避免单成员抽象类。
     - one_member_abstracts
     # 只抛出Exception/Error子类。
@@ -375,7 +375,7 @@ linter:
     # 指定不明显的局部变量类型。
     # - specify_nonobvious_local_variable_types
     # 指定不明显的属性类型。
-    # - specify_nonobvious_property_types
+    - specify_nonobvious_property_types
     # 显式指定顶层类型推断。
     # - strict_top_level_inference
     # 构造函数初始化列表super放最后。此规则在 Dart 3.0.0 中已被删除；
@@ -397,7 +397,7 @@ linter:
     # 文档注释避免HTML标签。
     - unintended_html_in_doc_comment
     # 没有await就不要async。
-    # - unnecessary_async
+    - unnecessary_async
     # return中避免不必要的await。
     - unnecessary_await_in_return
     # 字符串插值避免不必要的大括号。
@@ -451,7 +451,7 @@ linter:
     # 展开集合时避免不必要的toList()。
     - unnecessary_to_list_in_spreads
     # 移除多余的变量下划线。
-    # - unnecessary_underscores
+    - unnecessary_underscores
     # 可执行库中存在无法访问的顶层成员。
     - unreachable_from_main
     # 不同类型之间的相等性检查。
@@ -459,7 +459,7 @@ linter:
     # 避免不安全的HTML API。此 lint 已弃用并将在将来的版本中删除
     # - unsafe_html
     # 泛型类型存在非协变位置的不安全使用。
-    # - unsafe_variance
+    - unsafe_variance
     # 异步操作后避免跨异步间隙使用BuildContext。
     - use_build_context_synchronously
     # 使用ColoredBox代替Container设置颜色。
@@ -499,7 +499,7 @@ linter:
     # 方法名以to/as开头时应返回对应类型。
     - use_to_and_as_if_applicable
     # 使用整除运算符~/
-    # - use_truncating_division
+    - use_truncating_division
     # 确保正则表达式语法有效。
     - valid_regexps
     # 不要给void类型赋值。
