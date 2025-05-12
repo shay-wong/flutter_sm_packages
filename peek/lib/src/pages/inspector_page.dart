@@ -17,6 +17,29 @@ class InspectorPage extends StatefulWidget {
 }
 
 class _InspectorPageState extends State<InspectorPage> {
+  List<
+      (
+        IconData icon,
+        String title,
+        bool Function(),
+        void Function(bool),
+      )> get _listTiles => [
+        (
+          WidgetsApp.debugAllowBannerOverride
+              ? Icons.bookmark_added_rounded
+              : Icons.bookmark_remove_rounded,
+          '是否允许横幅覆盖',
+          () => WidgetsApp.debugAllowBannerOverride,
+          _debugAllowBanner,
+        ),
+        (
+          Icons.touch_app_rounded,
+          '显示小部件检查器',
+          () => WidgetsBinding.instance.debugShowWidgetInspectorOverride,
+          _debugShowWidgetInspector,
+        ),
+      ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,31 +51,36 @@ class _InspectorPageState extends State<InspectorPage> {
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {
+          final (icon, title, value, changed) = _listTiles[index];
           return ListTile(
-            leading: const Icon(Icons.touch_app_rounded),
-            title: const Text('显示小部件检查器'),
+            leading: Icon(icon),
+            title: Text(title),
             trailing: CupertinoSwitch(
-              value: WidgetsBinding.instance.debugShowWidgetInspectorOverride,
-              onChanged: debugShowWidgetInspector,
+              value: value(),
+              onChanged: changed,
             ),
             onTap: () {
-              debugShowWidgetInspector(
-                !WidgetsBinding.instance.debugShowWidgetInspectorOverride,
-              );
+              changed(!value());
             },
           );
         },
-        itemCount: 1,
+        itemCount: _listTiles.length,
       ),
     );
   }
 
-  void debugShowWidgetInspector(bool value) {
+  void _debugShowWidgetInspector(bool value) {
     setState(() {
       WidgetsBinding.instance.debugShowWidgetInspectorOverride = value;
     });
     if (value) {
       widget.onClose?.call();
     }
+  }
+
+  void _debugAllowBanner(bool value) {
+    WidgetsApp.debugAllowBannerOverride = value;
+    // 重新组装应用程序
+    WidgetsBinding.instance.reassembleApplication();
   }
 }
