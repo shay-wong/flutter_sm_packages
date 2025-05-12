@@ -8,10 +8,14 @@ class RoutePage extends StatefulWidget {
   const RoutePage({
     super.key,
     this.options = const RouteOptions(),
+    this.onClose,
   });
 
   /// 路由选项
   final RouteOptions options;
+
+  /// 关闭回调
+  final VoidCallback? onClose;
 
   @override
   State<RoutePage> createState() => _RoutePageState();
@@ -36,7 +40,12 @@ class _RoutePageState extends State<RoutePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('Route')),
+      appBar: AppBar(
+        title: const Text('Route'),
+        actions: [
+          CloseButton(onPressed: widget.onClose),
+        ],
+      ),
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(16),
@@ -91,8 +100,18 @@ class _RoutePageState extends State<RoutePage> {
     do {
       if (route?.current != null) {
         var arguments = route?.current?.settings.arguments;
+        final name = route?.current?.settings.name;
+        var routeName = name;
+        var parameters = <String, String>{};
         if (arguments is RouteSettings) {
+          routeName = arguments.name;
           arguments = arguments.arguments;
+        }
+        if (routeName != null) {
+          final uri = Uri.tryParse(routeName);
+          if (uri != null) {
+            parameters = uri.queryParameters;
+          }
         }
         widgets.add(
           Container(
@@ -116,30 +135,51 @@ class _RoutePageState extends State<RoutePage> {
                     ),
                   ),
                   TextSpan(
-                    text: route?.current?.settings.name,
+                    text: name,
                     style: const TextStyle(
                       fontSize: 10,
                       height: 1.5,
                       color: Color(0xff666666),
                     ),
                   ),
-                  const TextSpan(
-                    text: '\n路由参数: ',
-                    style: TextStyle(
-                      height: 1.5,
-                      fontSize: 10,
-                      color: Color(0xff333333),
-                      fontWeight: FontWeight.bold,
+                  if (arguments != null)
+                    const TextSpan(
+                      text: '\n路由参数: ',
+                      style: TextStyle(
+                        height: 1.5,
+                        fontSize: 10,
+                        color: Color(0xff333333),
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                  TextSpan(
-                    text: '$arguments',
-                    style: const TextStyle(
-                      fontSize: 10,
-                      height: 1.5,
-                      color: Color(0xff666666),
+                  if (arguments != null)
+                    TextSpan(
+                      text: '$arguments',
+                      style: const TextStyle(
+                        fontSize: 10,
+                        height: 1.5,
+                        color: Color(0xff666666),
+                      ),
                     ),
-                  ),
+                  if (parameters.isNotEmpty)
+                    const TextSpan(
+                      text: '\n路径参数: ',
+                      style: TextStyle(
+                        height: 1.5,
+                        fontSize: 10,
+                        color: Color(0xff333333),
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  if (parameters.isNotEmpty)
+                    TextSpan(
+                      text: '$parameters',
+                      style: const TextStyle(
+                        fontSize: 10,
+                        height: 1.5,
+                        color: Color(0xff666666),
+                      ),
+                    ),
                   const TextSpan(
                     text: '\n所在Navigator: ',
                     style: TextStyle(

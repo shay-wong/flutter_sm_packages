@@ -1,6 +1,5 @@
 import 'dart:async';
 
-import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
@@ -109,7 +108,7 @@ class _PeekEntryState extends State<PeekEntry>
 
   @override
   Widget build(BuildContext context) {
-    if (!kReleaseMode) {
+    if (widget.options.showEntry) {
       var child = _buildContent(false);
 
       child = Draggable(
@@ -212,7 +211,7 @@ class _PeekEntryState extends State<PeekEntry>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    if (!kReleaseMode) {
+    if (widget.options.showEntry) {
       isHide = false;
       _isAnimated = false;
       // 重新计算位置
@@ -222,7 +221,7 @@ class _PeekEntryState extends State<PeekEntry>
 
   @override
   void dispose() {
-    if (!kReleaseMode && mounted) {
+    if (widget.options.showEntry && mounted) {
       _cancelTimer();
       _animationController?.dispose();
 

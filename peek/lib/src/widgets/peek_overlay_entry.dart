@@ -10,8 +10,7 @@ class PeekOverlayEntry extends OverlayEntry {
 
   @override
   void markNeedsBuild() {
-    if (SchedulerBinding.instance.schedulerPhase ==
-        SchedulerPhase.persistentCallbacks) {
+    if (SchedulerBinding.instance.schedulerPhase == SchedulerPhase.persistentCallbacks) {
       SchedulerBinding.instance.addPostFrameCallback((_) {
         super.markNeedsBuild();
       });

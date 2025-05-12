@@ -1,4 +1,4 @@
-import '../../widgets/peek_tile.dart';
+import '../../widgets/tiles/peek_tile.dart';
 import 'entry_options.dart';
 import 'route_options.dart';
 
