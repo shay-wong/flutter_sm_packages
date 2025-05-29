@@ -4,6 +4,9 @@
       "path": "peek"
     },
     {
+      "path": "sm_network"
+    },
+    {
       "path": "sm_lints"
     }
   ],
