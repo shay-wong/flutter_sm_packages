@@ -1,16 +1,15 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../../peek.dart';
+import '../widgets/src/peek_scaffold.dart';
+
 /// 调试页面
 class InspectorPage extends StatefulWidget {
   // ignore: public_member_api_docs
   const InspectorPage({
     super.key,
-    this.onClose,
   });
-
-  /// 关闭回调
-  final VoidCallback? onClose;
 
   @override
   State<InspectorPage> createState() => _InspectorPageState();
@@ -42,13 +41,8 @@ class _InspectorPageState extends State<InspectorPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Inspector'),
-        actions: [
-          CloseButton(onPressed: widget.onClose),
-        ],
-      ),
+    return PeekScaffold(
+      titleText: 'Inspector',
       body: ListView.builder(
         itemBuilder: (context, index) {
           final (icon, title, value, changed) = _listTiles[index];
@@ -74,7 +68,7 @@ class _InspectorPageState extends State<InspectorPage> {
       WidgetsBinding.instance.debugShowWidgetInspectorOverride = value;
     });
     if (value) {
-      widget.onClose?.call();
+      Peek.toggleHome();
     }
   }
 
@@ -82,5 +76,7 @@ class _InspectorPageState extends State<InspectorPage> {
     WidgetsApp.debugAllowBannerOverride = value;
     // 重新组装应用程序
     WidgetsBinding.instance.reassembleApplication();
+    // 保存偏好，用于下次启动设置
+    PeekPreference.instance.inspector.setDebugAllowBannerOverride(value);
   }
 }

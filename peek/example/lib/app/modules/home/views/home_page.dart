@@ -1,6 +1,7 @@
 import 'package:example/app/routes/app_pages.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:peek/peek.dart';
 
 import '../controllers/home_controller.dart';
 
@@ -12,6 +13,14 @@ class HomePage extends GetView<HomeController> {
       appBar: AppBar(
         title: const Text('HomePage'),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Peek.toggle();
+          },
+          icon: const Icon(
+            Icons.troubleshoot_rounded,
+          ),
+        ),
       ),
       body: const Center(
         child: Text(

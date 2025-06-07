@@ -12,8 +12,12 @@ void main() {
       options: PeekOptions(
         enable: true,
         entryOptions: EntryOptions(
-          isAdsorb: true,
-          isHiding: true,
+          adsorb: true,
+          autoHide: true,
+        ),
+        menuOptions: MenuOptions(
+          enable: true,
+          autoHide: true,
         ),
         routeOptions: RouteOptions(
           getNavigatorKey: () => Get.key,
@@ -23,12 +27,15 @@ void main() {
         title: "Application",
         initialRoute: AppPages.initial,
         getPages: AppPages.routes,
-        // builder: Peek.init(
+        navigatorObservers: [
+          CustomObservers(),
+        ],
+        // builder: Peek.builder(
         //   options: PeekOptions(
         //     enable: true,
         //     entryOptions: EntryOptions(
-        //       isAdsorb: true,
-        //       isHiding: true,
+        //       adsorb: true,
+        //       autoHide: true,
         //     ),
         //     routeOptions: RouteOptions(
         //       getNavigatorKey: () => Get.key,
@@ -38,4 +45,13 @@ void main() {
       ),
     ),
   );
+}
+
+class CustomObservers extends NavigatorObserver {
+  @override
+  void didPush(Route route, Route? previousRoute) {
+    // ignore: avoid_print
+    print('didPush');
+    super.didPush(route, previousRoute);
+  }
 }

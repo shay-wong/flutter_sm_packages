@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../options/src/route_options.dart';
+import '../widgets/src/peek_scaffold.dart';
 
 /// 路由页面
 class RoutePage extends StatefulWidget {
@@ -8,14 +9,10 @@ class RoutePage extends StatefulWidget {
   const RoutePage({
     super.key,
     this.options = const RouteOptions(),
-    this.onClose,
   });
 
   /// 路由选项
   final RouteOptions options;
-
-  /// 关闭回调
-  final VoidCallback? onClose;
 
   @override
   State<RoutePage> createState() => _RoutePageState();
@@ -39,13 +36,8 @@ class _RoutePageState extends State<RoutePage> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Route'),
-        actions: [
-          CloseButton(onPressed: widget.onClose),
-        ],
-      ),
+    return PeekScaffold(
+      titleText: 'Route',
       body: SingleChildScrollView(
         child: Container(
           margin: const EdgeInsets.all(16),

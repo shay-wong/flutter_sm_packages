@@ -6,29 +6,37 @@ class EntryOptions {
   const EntryOptions({
     this.color,
     this.dragColor,
-    double? height,
+    this.dimension,
     this.hideDuration = const Duration(seconds: 3),
     this.icon,
-    this.isAdsorb = true,
-    this.isHiding = true,
+    this.adsorb = true,
+    this.autoHide = true,
+    this.fold = true,
+    this.longPressDuration = const Duration(seconds: 1),
     this.onLongPressed,
     this.onPressed,
     this.opacity,
     this.position,
     this.showEntry = true,
-    double? size,
-    double? width,
-  })  : width = width ?? size,
-        height = height ?? size;
+  });
+
+  /// 是否吸附
+  final bool adsorb;
+
+  /// 是否自动隐藏
+  final bool autoHide;
 
   /// 入口的颜色
   final Color? color;
 
+  /// 入口的大小
+  final double? dimension;
+
   /// 入口的拖拽颜色
   final Color? dragColor;
 
-  /// 入口的高度
-  final double? height;
+  /// 是否收起
+  final bool fold;
 
   /// 自动隐藏时间
   final Duration hideDuration;
@@ -36,11 +44,8 @@ class EntryOptions {
   /// 自定义图标
   final IconData? icon;
 
-  /// 是否吸附
-  final bool isAdsorb;
-
-  /// 是否自动隐藏
-  final bool isHiding;
+  /// 长按触发时间
+  final Duration longPressDuration;
 
   /// 长按回调
   final VoidCallback? onLongPressed;
@@ -57,39 +62,36 @@ class EntryOptions {
   /// 是否显示入口
   final bool showEntry;
 
-  /// 入口的宽度
-  final double? width;
-
   /// 拷贝
   EntryOptions copyWith({
     Color? color,
     Color? dragColor,
-    double? height,
     Duration? hideDuration,
     IconData? icon,
-    bool? isAdsorb,
-    bool? isHiding,
+    bool? adsorb,
+    bool? autoHide,
+    bool? fold,
     VoidCallback? onLongPressed,
     VoidCallback? onPressed,
     double? opacity,
     Offset? position,
     bool? showEntry,
-    double? width,
+    double? dimension,
   }) {
     return EntryOptions(
       color: color ?? this.color,
       dragColor: dragColor ?? this.dragColor,
-      height: height ?? this.height,
       hideDuration: hideDuration ?? this.hideDuration,
       icon: icon ?? this.icon,
-      isAdsorb: isAdsorb ?? this.isAdsorb,
-      isHiding: isHiding ?? this.isHiding,
+      adsorb: adsorb ?? this.adsorb,
+      autoHide: autoHide ?? this.autoHide,
+      fold: fold ?? this.fold,
       onLongPressed: onLongPressed ?? this.onLongPressed,
       onPressed: onPressed ?? this.onPressed,
       opacity: opacity ?? this.opacity,
       position: position ?? this.position,
       showEntry: showEntry ?? this.showEntry,
-      width: width ?? this.width,
+      dimension: dimension ?? this.dimension,
     );
   }
 
@@ -97,25 +99,24 @@ class EntryOptions {
   EntryOptions merge({
     Color? color,
     Color? dragColor,
-    double? height,
     IconData? icon,
     VoidCallback? onLongPressed,
     VoidCallback? onPressed,
     double? opacity,
     Offset? position,
     bool? showEntry,
-    double? width,
+    double? dimension,
+    double? height,
   }) {
     return copyWith(
       color: this.color ?? color,
       dragColor: this.dragColor ?? dragColor,
-      height: this.height ?? height,
       icon: this.icon ?? icon,
       onLongPressed: this.onLongPressed ?? onLongPressed,
       onPressed: this.onPressed ?? onPressed,
       opacity: this.opacity ?? opacity,
       position: this.position ?? position,
-      width: this.width ?? width,
+      dimension: this.dimension ?? dimension,
     );
   }
 }

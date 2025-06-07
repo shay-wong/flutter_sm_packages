@@ -15,8 +15,8 @@ class MyApp extends StatelessWidget {
       options: PeekOptions(
         enable: true,
         entryOptions: EntryOptions(
-          isAdsorb: true,
-          isHiding: true,
+          adsorb: true,
+          autoHide: true,
         ),
       ),
       child: MaterialApp(
@@ -24,12 +24,12 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        // builder: Peek.init(
+        // builder: Peek.builder(
         //   options: PeekOptions(
         //     enable: true,
         //     entryOptions: EntryOptions(
-        //       isAdsorb: true,
-        //       isHiding: true,
+        //       adsorb: true,
+        //       autoHide: true,
         //     ),
         //   ),
         // ),

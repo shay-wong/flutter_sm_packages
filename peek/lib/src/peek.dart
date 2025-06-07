@@ -1,14 +1,15 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
-import 'options/src/peek_options.dart';
+import '../peek.dart';
 import 'pages/peek_page.dart';
-import 'widgets/peek_entry.dart';
-import 'widgets/peek_overlay_entry.dart';
+import 'utils/src/logger.dart';
+import 'widgets/src/peek_alert.dart';
+import 'widgets/src/peek_overlay_entry.dart';
 
 /// 调试器
 class Peek extends StatefulWidget {
-  // ignore: public_member_api_docs, tighten_type_of_initializing_formals
+  // ignore: public_member_api_docs
   Peek({
     required Widget? child,
     PeekOptions? options,
@@ -19,6 +20,9 @@ class Peek extends StatefulWidget {
   // ignore: public_member_api_docs
   static final _globalKey = GlobalKey<_PeekState>();
 
+  /// 入口是否显示
+  static bool get isShow => _globalKey.currentState?.isShowEntry ?? false;
+
   // ignore: public_member_api_docs
   final Widget child;
 
@@ -28,8 +32,8 @@ class Peek extends StatefulWidget {
   @override
   State<Peek> createState() => _PeekState();
 
-  /// 初始化
-  static TransitionBuilder? init({
+  /// overlay 构建
+  static TransitionBuilder? builder({
     PeekOptions? options,
     TransitionBuilder? builder,
   }) {
@@ -51,34 +55,47 @@ class Peek extends StatefulWidget {
     }
   }
 
+  /// 初始化
+  static Future<void> initialize() async => _globalKey.currentState?.initialize();
+
   /// 切换入口显示
   static void toggle() => _globalKey.currentState?.toggleEntry();
 
   /// 显示主页显示
   static void toggleHome() => _globalKey.currentState?.toggleHome();
-
-  /// 入口是否显示
-  static bool get isShow => _globalKey.currentState?.isShowEntry ?? false;
 }
 
 class _PeekState extends State<Peek> {
-  late PeekOverlayEntry _overlayEntry;
+  /// 是否显示 peek 入口
+  bool isShowEntry = false;
+
+  /// 是否显示主页
+  bool isShowHome = false;
+
   OverlayEntry? peekPage;
+
+  static final _globalKey = GlobalKey<PeekEntryState>();
+
+  late final PeekOverlayEntry _overlayEntry = PeekOverlayEntry(
+    builder: (context) {
+      return PeekEntry(
+        key: _globalKey,
+        options: widget.options.entryOptions.merge(
+          onPressed: toggleHome,
+        ),
+        menuOptions: widget.options.menuOptions,
+      );
+    },
+  );
 
   final _overlayKey = GlobalKey<OverlayState>();
 
-  /// 是否显示主页
-  // ignore: omit_obvious_property_types
-  bool isShowHome = false;
-
-  /// 是否显示 peek 入口
-  // ignore: omit_obvious_property_types
-  bool isShowEntry = false;
+  bool _isInitialized = false;
 
   @override
   Widget build(BuildContext context) {
-    // ignore: omit_local_variable_types
-    Widget child = widget.child;
+    Logger.debug('Peek build');
+    var child = widget.child;
 
     if (widget.options.enable) {
       child = Material(
@@ -95,6 +112,7 @@ class _PeekState extends State<Peek> {
         ),
       );
 
+      // 判断是否有 Directionality，没有的话添加设置默认的 textDirection 为 ltr
       if (context.widget is! Directionality &&
           context.getElementForInheritedWidgetOfExactType<Directionality>() == null) {
         child = Directionality(
@@ -105,73 +123,6 @@ class _PeekState extends State<Peek> {
     }
 
     return child;
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _overlayEntry = PeekOverlayEntry(
-      builder: (context) => PeekEntry(
-        options: widget.options.entryOptions.merge(
-          onPressed: toggleHome,
-          onLongPressed: () {
-            debugPrint('关闭调试入口');
-            hideEntry();
-          },
-        ),
-      ),
-    );
-
-    isShowEntry = widget.options.entryOptions.showEntry;
-  }
-
-  void hideHome() {
-    if (isShowHome && peekPage != null) {
-      peekPage!.remove();
-      isShowHome = false;
-    }
-  }
-
-  void showHome() {
-    if (!isShowHome) {
-      _overlayKey.currentState?.insert(peekPage!, below: _overlayEntry);
-      isShowHome = true;
-    }
-  }
-
-  void toggleHome() {
-    peekPage ??= OverlayEntry(
-      builder: (context) => PeekPage(
-        options: widget.options,
-        onClose: hideHome,
-        customTiles: widget.options.customTiles,
-      ),
-    );
-    if (isShowHome) {
-      hideHome();
-    } else {
-      showHome();
-    }
-  }
-
-  void hideEntry() {
-    if (isShowEntry) {
-      hideHome();
-      _overlayEntry.remove();
-      isShowEntry = false;
-    }
-  }
-
-  void showEntry() {
-    if (!isShowEntry) {
-      _overlayKey.currentState?.insert(_overlayEntry);
-      isShowEntry = true;
-    }
-  }
-
-  /// 切换
-  void toggleEntry() {
-    isShowEntry ? hideEntry() : showEntry();
   }
 
   @override
@@ -187,5 +138,114 @@ class _PeekState extends State<Peek> {
       ..add(DiagnosticsProperty<OverlayEntry?>('peekPage', peekPage))
       ..add(DiagnosticsProperty<bool>('isShowHome', isShowHome))
       ..add(DiagnosticsProperty<bool>('isShowEntry', isShowEntry));
+  }
+
+  Future<void> hideEntry() async {
+    if (isShowEntry) {
+      late PeekOverlayEntry alert;
+      alert = PeekOverlayEntry(
+        builder: (context) {
+          return PeekAlert(
+            title: '关闭入口',
+            cancel: '关闭',
+            confirm: '取消',
+            onCancel: () {
+              hideHome();
+              alert.remove();
+              _overlayEntry.remove();
+              isShowEntry = false;
+              PeekPreference.instance.options.setShowEntry(false);
+            },
+            onDismiss: () => alert.remove(),
+            onConfirm: () => alert.remove(),
+          );
+        },
+      );
+      _overlayKey.currentState?.insert(alert);
+    }
+  }
+
+  void hideHome() {
+    if (isShowHome && peekPage != null) {
+      peekPage!.remove();
+      isShowHome = false;
+    }
+  }
+
+  Future init() async {
+    var isShow = widget.options.enable && widget.options.entryOptions.showEntry;
+    final prefs = PeekPreference.instance;
+    final isInit = _isInitialized;
+    if (!isInit) {
+      isShowEntry = _isInitialized;
+      await initialize();
+    }
+
+    if (isShow && prefs.options.showEntry != null) {
+      isShow = prefs.options.showEntry!;
+    }
+
+    if (!isInit) {
+      isShow ? showEntry() : hideEntry();
+    }
+
+    WidgetsApp.debugAllowBannerOverride = prefs.inspector.debugAllowBannerOverride;
+    if (!isInit) {
+      // 重新组装应用程序
+      WidgetsBinding.instance.reassembleApplication();
+    }
+  }
+
+  /// 初始化
+  Future<void> initialize() async {
+    if (!_isInitialized) {
+      await PeekPreference.instance.reloadCache();
+      _isInitialized = true;
+      Logger.debug('Peek init');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    init();
+  }
+
+  void showEntry() {
+    if (!isShowEntry) {
+      _overlayKey.currentState?.insert(_overlayEntry);
+      isShowEntry = true;
+      PeekPreference.instance.options.setShowEntry(true);
+    }
+  }
+
+  void showHome() {
+    if (!isShowHome) {
+      _overlayKey.currentState?.insert(peekPage!, below: _overlayEntry);
+      isShowHome = true;
+    }
+  }
+
+  /// 切换
+  void toggleEntry() {
+    isShowEntry ? hideEntry() : showEntry();
+  }
+
+  void toggleHome() {
+    peekPage ??= OverlayEntry(
+      builder: (context) => PeekPage(
+        options: widget.options,
+        customTiles: widget.options.customTiles,
+        onEntryOptionsChanged: () {
+          _globalKey.currentState?.toggleHide();
+        },
+      ),
+    );
+    if (isShowHome) {
+      hideHome();
+    } else {
+      showHome();
+    }
   }
 }

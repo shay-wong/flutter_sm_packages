@@ -3,4 +3,5 @@ library;
 
 export 'src/options/options.dart';
 export 'src/peek.dart';
-export 'src/widgets/tiles/tiles.dart';
+export 'src/utils/utils.dart';
+export 'src/widgets/widgets.dart';
