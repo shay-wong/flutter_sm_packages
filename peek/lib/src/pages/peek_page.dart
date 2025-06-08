@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 
 import '../../peek.dart';
 import '../widgets/src/peek_scaffold.dart';
@@ -16,6 +17,7 @@ class PeekPage extends StatelessWidget {
     this.options = const PeekOptions(),
     this.customTiles = const [],
     this.onEntryOptionsChanged,
+    this.showSemanticsDebuggerCallback,
   });
 
   /// 自定义选项
@@ -24,12 +26,27 @@ class PeekPage extends StatelessWidget {
   /// 入口选项更改
   final VoidCallback? onEntryOptionsChanged;
 
+  /// 显示语义调试回调
+  final ValueChanged<bool>? showSemanticsDebuggerCallback;
+
   /// 选项
   final PeekOptions options;
 
   @override
   Widget build(BuildContext context) {
+    final local = Localizations.maybeLocaleOf(context);
     return MaterialApp(
+      supportedLocales: const [
+        Locale('en', 'US'),
+        Locale('zh', 'CN'),
+        // Locale.fromSubtags(languageCode: 'ar'),
+      ],
+      locale: local,
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+        GlobalWidgetsLocalizations.delegate,
+        GlobalCupertinoLocalizations.delegate,
+      ],
       home: Builder(
         builder: (context) {
           return PeekScaffold(
@@ -110,7 +127,10 @@ class PeekPage extends StatelessWidget {
           Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (context) {
-                return const InspectorPage();
+                return InspectorPage(
+                  options: options.inspectorOptions,
+                  showSemanticsDebuggerCallback: showSemanticsDebuggerCallback,
+                );
               },
             ),
           );

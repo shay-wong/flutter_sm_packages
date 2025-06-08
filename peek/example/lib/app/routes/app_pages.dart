@@ -2,6 +2,8 @@ import 'package:get/get.dart';
 
 import '../modules/home/bindings/home_binding.dart';
 import '../modules/home/views/home_page.dart';
+import '../modules/locale/bindings/locale_binding.dart';
+import '../modules/locale/views/locale_page.dart';
 import '../modules/second/bindings/second_binding.dart';
 import '../modules/second/views/second_page.dart';
 import '../modules/third/bindings/third_binding.dart';
@@ -29,6 +31,11 @@ class AppPages {
       name: _Paths.third,
       page: () => const ThirdPage(),
       binding: ThirdBinding(),
+    ),
+    GetPage(
+      name: _Paths.locale,
+      page: () => const LocalePage(),
+      binding: LocaleBinding(),
     ),
   ];
 }

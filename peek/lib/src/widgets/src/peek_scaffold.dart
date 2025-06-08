@@ -13,9 +13,12 @@ class PeekScaffold extends Scaffold {
   }) : super(
           appBar: AppBar(
             title: title ?? (titleText != null ? Text(titleText) : null),
-            actions: const [
+            actions: [
               CloseButton(
-                onPressed: Peek.toggleHome,
+                // ignore: unnecessary_lambdas
+                onPressed: () {
+                  Peek.toggleHome();
+                },
               ),
             ],
           ),

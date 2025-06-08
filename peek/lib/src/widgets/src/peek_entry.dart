@@ -5,7 +5,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
 import '../../../peek.dart';
-import '../../utils/src/logger.dart';
 import '../../utils/src/prefrence/options_preference.dart';
 import 'menu/peek_menu.dart';
 
@@ -120,6 +119,9 @@ class PeekEntryState extends State<PeekEntry>
   /// 屏幕宽
   double get screenWidth => screenSize.width;
 
+  /// 是否显示
+  bool get _isShowEntry => _prefs.showEntry ?? widget.options.showEntry;
+
   OptionsPreference get _prefs => PeekPreference.instance.options;
 
   /// 吸附定位
@@ -134,7 +136,6 @@ class PeekEntryState extends State<PeekEntry>
 
     final newPosition = Offset(dx, dy);
     if (newPosition == _position) {
-      Logger.debug('adsorbPositioned');
       _autoHide();
     } else {
       _position = newPosition;
@@ -143,7 +144,7 @@ class PeekEntryState extends State<PeekEntry>
 
   @override
   Widget build(BuildContext context) {
-    if (widget.options.showEntry) {
+    if (_isShowEntry) {
       var child = _buildContent(false);
 
       child = Draggable(
@@ -183,7 +184,6 @@ class PeekEntryState extends State<PeekEntry>
         onEnd: () {
           if (!isDragging) {
             _isAnimated = false;
-            Logger.debug('onEnd');
             _autoHide();
             _prefs
               ..setDx(_position.dx.clamp(0, screenSize.width - dimension).toDouble())
@@ -210,7 +210,7 @@ class PeekEntryState extends State<PeekEntry>
   @override
   void didChangeMetrics() {
     super.didChangeMetrics();
-    if (widget.options.showEntry && mounted) {
+    if (_isShowEntry && mounted) {
       isHide = false;
       isFlod = false;
       _isAnimated = false;
@@ -221,12 +221,10 @@ class PeekEntryState extends State<PeekEntry>
 
   @override
   void dispose() {
-    if (widget.options.showEntry && mounted) {
-      _cancelTimer();
-      _animationController?.dispose();
+    _cancelTimer();
+    _animationController?.dispose();
 
-      WidgetsBinding.instance.removeObserver(this);
-    }
+    WidgetsBinding.instance.removeObserver(this);
 
     super.dispose();
   }
@@ -235,7 +233,7 @@ class PeekEntryState extends State<PeekEntry>
   void initState() {
     super.initState();
 
-    if (widget.options.showEntry) {
+    if (_isShowEntry) {
       _autoHide();
 
       WidgetsFlutterBinding.ensureInitialized();
@@ -254,8 +252,8 @@ class PeekEntryState extends State<PeekEntry>
     }
   }
 
-  /// 隐藏
-  void toggleHide() {
+  /// 重置状态
+  void reset() {
     setState(() {
       isHide = false;
       isFlod = false;
@@ -268,11 +266,8 @@ class PeekEntryState extends State<PeekEntry>
   /// 自动隐藏
   void _autoHide() {
     final isMenu = _menuController.isOpen && widget.menuOptions.autoHide;
-    Logger.debug(
-      '${(autoHide || isMenu || fold) && !isHide && !isDragging}, $autoHide, $isMenu, $fold, $isHide, $isDragging',
-    );
     // 条件：需要开启自动隐藏 || 是菜单 || 是收起 && 不是隐藏中 && 不是拖动中
-    if ((autoHide || isMenu || fold) && !isHide && !isDragging) {
+    if ((autoHide || isMenu || fold) && !isHide && !isDragging && mounted) {
       _resetTimer(
         isMenu ? widget.menuOptions.hideDuration : widget.options.hideDuration,
         () {

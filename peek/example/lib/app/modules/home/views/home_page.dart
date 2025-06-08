@@ -21,6 +21,16 @@ class HomePage extends GetView<HomeController> {
             Icons.troubleshoot_rounded,
           ),
         ),
+        actions: [
+          IconButton(
+            onPressed: () async {
+              Get.toNamed(Routes.locale);
+            },
+            icon: const Icon(
+              Icons.language_rounded,
+            ),
+          ),
+        ],
       ),
       body: const Center(
         child: Text(

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 
 /// 调试器弹窗
-class PeekAlert extends StatelessWidget {
+class PeekAlert extends StatefulWidget {
   // ignore: public_member_api_docs
   const PeekAlert({
     super.key,
@@ -28,13 +28,20 @@ class PeekAlert extends StatelessWidget {
   final bool barrierDismissible;
 
   /// 确认回调
-  final VoidCallback? onConfirm;
+  final ValueSetter<AnimationController?>? onConfirm;
 
   /// 取消回调
-  final VoidCallback? onCancel;
+  final ValueSetter<AnimationController?>? onCancel;
 
   /// 关闭回调
-  final VoidCallback? onDismiss;
+  final ValueSetter<AnimationController?>? onDismiss;
+
+  @override
+  State<PeekAlert> createState() => _PeekAlertState();
+}
+
+class _PeekAlertState extends State<PeekAlert> {
+  late AnimationController? _controller;
 
   @override
   Widget build(BuildContext context) {
@@ -57,18 +64,18 @@ class PeekAlert extends StatelessWidget {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            if (title != null)
+            if (widget.title != null)
               Padding(
                 padding: const EdgeInsets.only(top: 5),
                 child: Text(
-                  title!,
+                  widget.title!,
                   style: const TextStyle(
                     fontSize: 17,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
-            if (title != null)
+            if (widget.title != null)
               const SizedBox(
                 height: 20,
               ),
@@ -82,8 +89,10 @@ class PeekAlert extends StatelessWidget {
                       backgroundColor: Colors.redAccent,
                       foregroundColor: Colors.white,
                     ),
-                    onPressed: onCancel,
-                    child: Text(cancel ?? '取消'),
+                    onPressed: () {
+                      widget.onCancel?.call(_controller);
+                    },
+                    child: Text(widget.cancel ?? '取消'),
                   ),
                 ),
                 Expanded(
@@ -91,14 +100,16 @@ class PeekAlert extends StatelessWidget {
                     style: FilledButton.styleFrom(
                       backgroundColor: Colors.white,
                       foregroundColor: Theme.of(context).colorScheme.primary,
-                      shape: onConfirm == null
+                      shape: widget.onConfirm == null
                           ? null
                           : StadiumBorder(
                               side: BorderSide(color: Theme.of(context).colorScheme.primary),
                             ),
                     ),
-                    onPressed: onConfirm,
-                    child: Text(confirm ?? '确定'),
+                    onPressed: () {
+                      widget.onConfirm?.call(_controller);
+                    },
+                    child: Text(widget.confirm ?? '确定'),
                   ),
                 ),
               ],
@@ -107,15 +118,21 @@ class PeekAlert extends StatelessWidget {
         ),
       ).animate().scale(duration: 100.ms),
     );
-    if (barrierDismissible) {
+    if (widget.barrierDismissible) {
       child = GestureDetector(
-        onTap: onDismiss,
+        onTap: () {
+          widget.onDismiss?.call(_controller);
+        },
         child: child,
       );
     }
     return Material(
       type: MaterialType.transparency,
       child: child,
-    ).animate().fade();
+    ).animate(
+      onInit: (controller) {
+        _controller = controller;
+      },
+    ).fade(duration: 250.ms);
   }
 }

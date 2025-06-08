@@ -24,7 +24,7 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
         ),
-        // builder: Peek.builder(
+        // builder: Peek.transitionBuilder(
         //   options: PeekOptions(
         //     enable: true,
         //     entryOptions: EntryOptions(

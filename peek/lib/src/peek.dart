@@ -11,10 +11,16 @@ import 'widgets/src/peek_overlay_entry.dart';
 class Peek extends StatefulWidget {
   // ignore: public_member_api_docs
   Peek({
-    required Widget? child,
-    PeekOptions? options,
-  })  : child = child ?? const SizedBox.shrink(),
-        options = options ?? const PeekOptions(),
+    required this.child,
+    this.options = const PeekOptions(),
+  })  : builder = null,
+        super(key: _globalKey);
+
+  /// builder 构建
+  Peek.builder({
+    required this.builder,
+    this.options = const PeekOptions(),
+  })  : child = null,
         super(key: _globalKey);
 
   // ignore: public_member_api_docs
@@ -23,8 +29,11 @@ class Peek extends StatefulWidget {
   /// 入口是否显示
   static bool get isShow => _globalKey.currentState?.isShowEntry ?? false;
 
-  // ignore: public_member_api_docs
-  final Widget child;
+  /// child
+  final Widget? child;
+
+  /// builder
+  final WidgetBuilder? builder;
 
   /// 调试选项
   final PeekOptions options;
@@ -33,11 +42,11 @@ class Peek extends StatefulWidget {
   State<Peek> createState() => _PeekState();
 
   /// overlay 构建
-  static TransitionBuilder? builder({
-    PeekOptions? options,
+  static TransitionBuilder? transitionBuilder({
+    PeekOptions options = const PeekOptions(),
     TransitionBuilder? builder,
   }) {
-    final enable = options?.enable ?? false;
+    final enable = options.enable;
     if (enable) {
       return (BuildContext context, Widget? child) {
         final peek = Peek(
@@ -94,8 +103,8 @@ class _PeekState extends State<Peek> {
 
   @override
   Widget build(BuildContext context) {
-    Logger.debug('Peek build');
-    var child = widget.child;
+    Widget getChild() => widget.builder?.call(context) ?? widget.child ?? const SizedBox.shrink();
+    var child = getChild();
 
     if (widget.options.enable) {
       child = Material(
@@ -104,7 +113,7 @@ class _PeekState extends State<Peek> {
           initialEntries: [
             PeekOverlayEntry(
               builder: (context) {
-                return widget.child;
+                return getChild();
               },
             ),
             if (isShowEntry) _overlayEntry,
@@ -113,8 +122,7 @@ class _PeekState extends State<Peek> {
       );
 
       // 判断是否有 Directionality，没有的话添加设置默认的 textDirection 为 ltr
-      if (context.widget is! Directionality &&
-          context.getElementForInheritedWidgetOfExactType<Directionality>() == null) {
+      if (Directionality.maybeOf(context) == null) {
         child = Directionality(
           textDirection: TextDirection.ltr,
           child: child,
@@ -149,15 +157,22 @@ class _PeekState extends State<Peek> {
             title: '关闭入口',
             cancel: '关闭',
             confirm: '取消',
-            onCancel: () {
+            onCancel: (controller) async {
               hideHome();
+              await controller?.reverse();
               alert.remove();
               _overlayEntry.remove();
               isShowEntry = false;
               PeekPreference.instance.options.setShowEntry(false);
             },
-            onDismiss: () => alert.remove(),
-            onConfirm: () => alert.remove(),
+            onDismiss: (controller) async {
+              await controller?.reverse();
+              alert.remove();
+            },
+            onConfirm: (controller) async {
+              await controller?.reverse();
+              alert.remove();
+            },
           );
         },
       );
@@ -181,7 +196,7 @@ class _PeekState extends State<Peek> {
       await initialize();
     }
 
-    if (isShow && prefs.options.showEntry != null) {
+    if (prefs.options.showEntry != null) {
       isShow = prefs.options.showEntry!;
     }
 
@@ -189,11 +204,14 @@ class _PeekState extends State<Peek> {
       isShow ? showEntry() : hideEntry();
     }
 
-    WidgetsApp.debugAllowBannerOverride = prefs.inspector.debugAllowBannerOverride;
-    if (!isInit) {
-      // 重新组装应用程序
-      WidgetsBinding.instance.reassembleApplication();
-    }
+    assert(() {
+      WidgetsApp.debugAllowBannerOverride = prefs.inspector.debugAllowBannerOverride;
+      if (!isInit) {
+        // 重新组装应用程序
+        WidgetsBinding.instance.performReassemble();
+      }
+      return true;
+    }());
   }
 
   /// 初始化
@@ -238,8 +256,13 @@ class _PeekState extends State<Peek> {
         options: widget.options,
         customTiles: widget.options.customTiles,
         onEntryOptionsChanged: () {
-          _globalKey.currentState?.toggleHide();
+          _globalKey.currentState?.reset();
         },
+        showSemanticsDebuggerCallback: widget.builder != null
+            ? (value) {
+                // setState(() {});
+              }
+            : null,
       ),
     );
     if (isShowHome) {

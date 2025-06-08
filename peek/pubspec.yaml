@@ -12,6 +12,8 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_animate: ">=4.5.2 <5.0.0"
+  flutter_localizations:
+    sdk: flutter
   shared_preferences: ">=2.5.3 <3.0.0"
 
 dev_dependencies:
