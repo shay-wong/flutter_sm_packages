@@ -18,7 +18,7 @@ class PeekGridTile extends PeekTile {
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: onTap,
+      onTap: onTap != null ? () => onTap!(context) : null,
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [

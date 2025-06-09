@@ -25,7 +25,7 @@ class PeekListTile extends PeekTile {
       title: title,
       leading: icon,
       trailing: trailing ?? (onTap == null ? null : const Icon(Icons.navigate_next)),
-      onTap: onTap,
+      onTap: onTap != null ? () => onTap!(context) : null,
     );
   }
 }

@@ -7,7 +7,6 @@ class LocalePage extends GetView<LocaleController> {
   const LocalePage({super.key});
   @override
   Widget build(BuildContext context) {
-    print(Get.locale);
     return Scaffold(
       appBar: AppBar(
         title: const Text('LocalePage'),

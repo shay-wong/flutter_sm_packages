@@ -123,7 +123,7 @@ class PeekPage extends StatelessWidget {
         title: const Text(
           'Inspector',
         ),
-        onTap: () {
+        onTap: (context) {
           Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (context) {
@@ -144,7 +144,7 @@ class PeekPage extends StatelessWidget {
         icon: const Icon(
           Icons.route_outlined,
         ),
-        onTap: () {
+        onTap: (context) {
           Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (context) {
@@ -164,7 +164,7 @@ class PeekPage extends StatelessWidget {
         icon: const Icon(
           Icons.menu_rounded,
         ),
-        onTap: () {
+        onTap: (context) {
           Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (context) {
@@ -182,7 +182,7 @@ class PeekPage extends StatelessWidget {
         icon: const Icon(
           Icons.settings_suggest_rounded,
         ),
-        onTap: () {
+        onTap: (context) {
           Navigator.of(context).push(
             CupertinoPageRoute(
               builder: (context) {
