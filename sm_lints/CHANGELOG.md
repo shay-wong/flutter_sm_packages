@@ -1,5 +1,9 @@
 # sm_lints
 
+## 2.0.2
+
+- disable specify_nonobvious_local_variable_types rules.
+
 ## 2.0.1
 
 - update rules.

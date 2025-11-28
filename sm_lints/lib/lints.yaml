@@ -374,7 +374,7 @@ linter:
     # 无名构造函数声明最前。
     sort_unnamed_constructors_first: true
     # 指定不明显的局部变量类型。
-    specify_nonobvious_local_variable_types: true
+    specify_nonobvious_local_variable_types: false
     # 指定不明显的属性类型。
     specify_nonobvious_property_types: true
     # 显式指定顶层类型推断。
