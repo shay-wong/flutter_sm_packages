@@ -1,5 +1,13 @@
 # sm_lints
 
+## 2.0.2
+
+- disable specify_nonobvious_local_variable_types rules.
+
+## 2.0.1
+
+- update rules.
+
 ## 2.0.0
 
 - requires a language version of at least 3.8.
